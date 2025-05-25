@@ -1,17 +1,14 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-  <meta charset="UTF-8" />
+<!DOCTYPE html><html lang="ar"><head>  <meta charset="UTF-8" />
   <title>لعبة طبول الحرب - النسخة المتقدمة</title>
   <style>
     body { font-family: 'Segoe UI', sans-serif; background: #111; color: #fff; text-align: center; direction: rtl; padding: 20px; }
     h1 { color: #ffcc00; }
-    .team-inputs, .selection, .results { margin: 20px 0; }
+    .team-inputs, .selection { margin: 20px 0; }
     button { padding: 10px 20px; font-size: 16px; cursor: pointer; margin-top: 10px; }
     .symbols { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
     .symbol { font-size: 24px; background: #222; margin: 5px; padding: 10px 15px; border-radius: 10px; cursor: pointer; transition: 0.3s; }
     .symbol:hover { background: #444; }
-    .selected { background: #0080ff !important; color: #fff; }
+    .symbol.disabled { pointer-events: none; opacity: 0.3; }
     .effect-box { margin-top: 20px; font-size: 18px; background: #222; padding: 15px; border-radius: 10px; min-height: 50px; white-space: pre-line; }
     #scoreDisplay { font-size: 18px; margin-top: 20px; }
   </style>
@@ -20,19 +17,18 @@
   <div class="developer">
     <h2>𖤍 | 𝐑𝐄𝐃𝐒𝐖𝐎𝐑𝐃 & فريق التطوير</h2>
     <ul>
-      <li><strong>𖤍 | 𝐑𝐄𝐃𝐒𝐖𝐎𝐑𝐃</strong> –  قائد المشروع_برمجة </li>
+      <li><strong>𖤍 | 𝐑𝐄𝐃𝐒𝐖𝐎𝐑𝐃</strong> – قائد المشروع_برمجة</li>
       <li>علي المطور – واجهة المستخدم وتجربة اللعب</li>
-      <li>سارا – جرافيك وتصميم </li>
+      <li>سارا – جرافيك وتصميم</li>
     </ul>
   </div>
   <h1>لعبة طبول الحرب</h1>
   <div class="team-inputs">
     <input type="text" id="team1" placeholder="اسم الفريق الأول" />
     <input type="text" id="team2" placeholder="اسم الفريق الثاني" />
-    <input type="number" id="startScore" placeholder="النقاط الابتدائية" value="100" />
+    <input type="number" id="startScore" placeholder="النقاط الابتدائية" value="400" />
     <button onclick="startGame()">ابدأ اللعبة</button>
   </div>
-
   <div class="selection" style="display:none">
     <h2 id="roundInfo">الجولة 1</h2>
     <p><strong id="currentTeam"></strong> اختر رمزك:</p>
@@ -41,27 +37,19 @@
     <button id="nextBtn" style="display:none; margin-top:15px;" onclick="nextTurn()">التالي</button>
     <div id="scoreDisplay"></div>
   </div>
-
   <script>
     const symbols = [
       ...Array.from({length: 20}, (_, i) => (i+1).toString()),
       '🐘','🦒','🦁','🦌','🐪','🦘','🐎','🐄','🐸','🐟','🐢','🐍','🐈','🐀','🐓','🦆','🕊️','🦋','🐌','🐇',
       '❤️','👁️','✈️','⚽','✏️','🪶','🌛','⭐','✉️','📞','📷','🔍','🧲','💣','🔑','🔒','🏠','💼','🎵','💡'
     ];
-
-    const damageTable = {};
-    symbols.forEach(sym => {
-      const val = Math.floor(Math.random() * 50);  // بين 0 و 49 نقطة
-      damageTable[sym] = val;
-    });
-
+    let damageTable = {};
     const funnyEffects = [
       "ضربة صاروخية!", "هجوم نمر شرس!", "تعويذة نارية!", "قنبلة ضحك!", "رمية سهم!", "صفعة قرد!", "صرخة تنين!", "خدعة سحرية!", "قبلة مميتة!"
     ];
-
     let teams = [], scores = {}, currentTurn = 0, round = 1;
     let waitingForNext = false;
-
+    let remainingSymbols = [];
     function startGame() {
       const t1 = document.getElementById('team1').value.trim();
       const t2 = document.getElementById('team2').value.trim();
@@ -71,8 +59,10 @@
         return;
       }
       teams = [t1, t2];
-      scores[t1] = startScore;
-      scores[t2] = startScore;
+      scores = {[t1]: startScore, [t2]: startScore};
+      damageTable = {};
+      symbols.forEach(sym => damageTable[sym] = Math.floor(Math.random() * 50));
+      remainingSymbols = [...symbols];
       document.querySelector('.team-inputs').style.display = 'none';
       document.querySelector('.selection').style.display = 'block';
       waitingForNext = false;
@@ -80,52 +70,37 @@
       round = 1;
       showTurn();
     }
-
     function showTurn() {
       document.getElementById('roundInfo').textContent = `الجولة ${round}`;
       document.getElementById('currentTeam').textContent = `دور ${teams[currentTurn]}`;
-      const effectBox = document.getElementById('effectBox');
-      if (!waitingForNext) effectBox.textContent = "";
+      if (!waitingForNext) document.getElementById('effectBox').textContent = "";
       const list = document.getElementById('symbolList');
-      list.innerHTML = symbols.map(s => `<div class="symbol" onclick="selectSymbol(this, '${s}')">${s}</div>`).join('');
+      list.innerHTML = remainingSymbols.map(s =>
+        `<div class="symbol${waitingForNext ? ' disabled':''}" onclick="selectSymbol(this, '${s}')">${s}</div>`
+      ).join('');
       updateScoreDisplay();
-
       document.getElementById('nextBtn').style.display = waitingForNext ? 'inline-block' : 'none';
-
-      // تعطيل الرموز أثناء انتظار التالي
-      list.querySelectorAll('.symbol').forEach(el => {
-        el.style.pointerEvents = waitingForNext ? 'none' : 'auto';
-        el.style.opacity = waitingForNext ? '0.5' : '1';
-      });
     }
-
     function selectSymbol(el, symbol) {
-      if (waitingForNext) return; // منع اختيار أكثر من رمز في نفس الدور
-
+      if (waitingForNext) return;
       const team = teams[currentTurn];
+      const other = teams[1 - currentTurn];
+      const target = Math.random() < 0.5 ? team : other;
       const damage = damageTable[symbol];
-      scores[team] -= damage;
+      scores[target] -= damage;
       const effect = funnyEffects[Math.floor(Math.random() * funnyEffects.length)];
-      const effectBox = document.getElementById('effectBox');
-      effectBox.textContent = `${effect} ${team} خسر ${damage} نقطة!`;
-
-      if (scores[team] <= 0) {
-        effectBox.textContent += `\n${team} خسر اللعبة!`;
+      document.getElementById('effectBox').textContent = `${effect} ${target} خسر ${damage} نقطة!`;
+      remainingSymbols = remainingSymbols.filter(s => s !== symbol);
+      if (scores[target] <= 0) {
+        document.getElementById('effectBox').textContent += `\n${target} خسر اللعبة!`;
         document.getElementById('symbolList').innerHTML = '';
         document.getElementById('nextBtn').style.display = 'none';
         return;
       }
-
       waitingForNext = true;
       document.getElementById('nextBtn').style.display = 'inline-block';
-
-      // تعطيل الرموز بعد الاختيار
-      document.getElementById('symbolList').querySelectorAll('.symbol').forEach(el => {
-        el.style.pointerEvents = 'none';
-        el.style.opacity = '0.5';
-      });
+      document.querySelectorAll('.symbol').forEach(elm => elm.classList.add('disabled'));
     }
-
     function nextTurn() {
       if (!waitingForNext) return;
       waitingForNext = false;
@@ -133,10 +108,9 @@
       if (currentTurn === 0) round++;
       showTurn();
     }
-
     function updateScoreDisplay() {
-      document.getElementById('scoreDisplay').textContent = `${teams[0]}: ${scores[teams[0]]} نقطة | ${teams[1]}: ${scores[teams[1]]} نقطة`;
+      document.getElementById('scoreDisplay').textContent =
+        `${teams[0]}: ${scores[teams[0]]} نقطة | ${teams[1]}: ${scores[teams[1]]} نقطة`;
     }
   </script>
-</body>
-</html>
+</body></html>
