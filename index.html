@@ -202,6 +202,12 @@
       font-size: 14px;
     }
     
+    .symbols-exhausted {
+      color: #ff5555;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+    
     @media (max-width: 480px) {
       .symbol {
         width: 60px;
@@ -250,6 +256,9 @@
       <p><strong id="currentTeam" class="team-name"></strong> اختر رمزك:</p>
       
       <div class="symbols" id="symbolList"></div>
+      <div id="symbolsExhausted" class="symbols-exhausted" style="display:none">
+        لقد تم استخدام جميع الرموز! اللعبة انتهت.
+      </div>
       
       <div class="effect-box" id="effectBox">اختر رمزًا لبدء الجولة الأولى!</div>
       
@@ -259,7 +268,7 @@
     </div>
     
     <div class="footer">
-      تم تطوير اللعبة بدقة لتكون متوافقة مع الهواتف الذكية - استمتع بالتجربة!
+      تم تطوير اللعبة بدقة لتكون متوافقة مع   الهواتف الذكية عن طريق فريق تطوير   __    𖤍 | 𝐑𝐄𝐃𝐒𝐖𝐎𝐑𝐃 - استمتع بالتجربة! الاصدار 0.2
     </div>
   </div>
 
@@ -270,28 +279,31 @@
       '❤️','👁️','✈️','⚽','✏️','🪶','🌛','⭐','✉️','📞','📷','🔍','🧲','💣','🔑','🔒','🏠','💼','🎵','💡'
     ];
     
-    // تعليقات مضحكة لكل حالة
+    // تعليقات متنوعة لكل حالة
     const funnyEffects = {
-      normal: [
-        "ضربة صاروخية! 💥",
-        "هجوم نمر شرس! 🐅",
-        "تعويذة نارية! 🔥",
-        "قنبلة ضحك! 🤣",
-        "رمية سهم! 🏹",
-        "صفعة قرد! 🐒",
-        "صرخة تنين! 🐲",
-        "خدعة سحرية! 🎩",
-        "قبلة مميتة! 💋"
-      ],
       selfDamage: [
-        "يا إلهي! لقد أطلقت النار على قدمك! 🤦‍♂️",
-        "هل تعلم أن الخصم هو الفريق الآخر؟ 😅",
-        "ربما تحتاج إلى نظارة جديدة! 👓",
-        "هذا ما يحدث عندما تلعب وأنت نعسان! 😴",
-        "هل هذه استراتيجية جديدة؟ لأنها ليست جيدة! 🤔",
-        "أوه! لقد ضربت نفسك بالخطأ.. أو ربما بقصد؟ 😏",
-        "هذا يذكرني بذلك الفيلم الكوميدي! 🎬",
-        "أحتاج إلى تفسير منطقي لهذا! 🤯"
+        "شبح نبض الأحول جعلك يا فريق {team} تخسر {damage} من النقاط! 👻",
+        "لقد سحرتك عين الحسود! {team} يخسر {damage} نقطة من نفسه! 👁️",
+        "يا للكارثة! {team} يطلق النار على قدمه ويخسر {damage} نقطة! 🔫",
+        "من يلعب بالنار يحترق! {team} يخسر {damage} نقطة من نفسه! 🔥",
+        "هل هذه استراتيجية جديدة؟ {team} يخسر {damage} نقطة من نفسه! 🤔",
+        "السحر الأسود يعود! {team} يخسر {damage} نقطة من نفسه! 🔮",
+        "اللعنة تطاردك! {team} يخسر {damage} نقطة من نفسه! 😱",
+        "الجنون يضرب من جديد! {team} يخسر {damage} نقطة من نفسه! 🤪",
+        "الشيطان يوسوس لك! {team} يخسر {damage} نقطة من نفسه! 😈",
+        "الغضب أعمى البصيرة! {team} يخسر {damage} نقطة من نفسه! 😤"
+      ],
+      enemyDamage: [
+        "طائرة إف 16 شنت عدة غارات على فريق {team} وتسببت بخصم {damage} نقطة! ✈️",
+        "جيش من التنانين يهاجم فريق {team} ويخسر {damage} نقطة! 🐉",
+        "زلزال مدمر يضرب معسكر فريق {team} ويخسر {damage} نقطة! 🌋",
+        "سيل جارف يغمر فريق {team} ويخسر {damage} نقطة! 🌊",
+        "قنابل عنقودية تنهال على فريق {team} وتخسر {damage} نقطة! 💣",
+        "هجوم بري متكامل على فريق {team} ويخسر {damage} نقطة! ⚔️",
+        "أسطول بحري يقصف فريق {team} ويخسر {damage} نقطة! ⚓",
+        "سهام سامة تنهال على فريق {team} وتخسر {damage} نقطة! 🏹",
+        "غزو فضائي لفريق {team} ويخسر {damage} نقطة! 👽",
+        "عاصفة رملية تعمي فريق {team} ويخسر {damage} نقطة! 🌪️"
       ],
       zeroDamage: [
         "يا للهول! لقد اختار رمزًا ضعيفًا جدًا... لا شيء يحدث! 🥱",
@@ -300,22 +312,44 @@
         "كانت هذه محاولة فاشلة! 😅",
         "الريح تحمل الأوراق... لا ضرر ولا ندم! 🍃",
         "الخصم لم يشعر بأي شيء! 😌",
-        "ربما تحتاج إلى شحن الرمز؟ 🔋"
+        "ربما تحتاج إلى شحن الرمز؟ 🔋",
+        "السحر لم يعمل هذه المرة! ✨",
+        "الطلقة طائشة... لا إصابة! 💫",
+        "التعويذة انتهت صلاحيتها! 📜"
       ],
       highDamage: [
-        "ضربة مدمرة! الدمار في كل مكان! 💣",
-        "هذا الرمز نادر وقوي جدًا! 🦄",
-        "تأثير خارق! هل هذا مسموح؟ 🤯",
-        "الخصم يترنح بعد هذه الضربة! 🥴",
-        "أمطار من النار! 🔥",
-        "زلزال مدمر! 🌋",
-        "إعصار قاتل! 🌪️"
+        "ضربة نووية! فريق {team} يخسر {damage} نقطة! ☢️",
+        "كارثة كونية! فريق {team} يخسر {damage} نقطة! 🌌",
+        "إبادة جماعية! فريق {team} يخسر {damage} نقطة! 💀",
+        "الدمار الشامل! فريق {team} يخسر {damage} نقطة! 💥",
+        "القضاء المبرم! فريق {team} يخسر {damage} نقطة! ⚡",
+        "الغضب الإلهي! فريق {team} يخسر {damage} نقطة! ⚠️",
+        "الطوفان العظيم! فريق {team} يخسر {damage} نقطة! 🌧️",
+        "البركان الثائر! فريق {team} يخسر {damage} نقطة! 🌋",
+        "التسونامي المدمر! فريق {team} يخسر {damage} نقطة! 🌊",
+        "الإنهيار الأرضي! فريق {team} يخسر {damage} نقطة! 🏔"
+      ],
+      winComments: [
+        "لقد سقط الجدار! {team} يهزم {loser} وينتصر! 🏆",
+        "النصر الساحق! {team} يهزم {loser} ببراعة! 🎯",
+        "السيادة المطلقة! {team} يسيطر على المعركة! 👑",
+        "الإمبراطورية تسقط! {loser} ينهزم أمام {team}! 🏰",
+        "الأسطورة تتحقق! {team} ينتصر على {loser}! 🦸",
+        "القيادة العسكرية تثبت تفوقها! {team} يهزم {loser}! 🪖",
+        "الاستراتيجية البارعة تقود {team} للنصر! 🧠",
+        "الضربة القاضية! {team} ينهي {loser}! 🥊"
       ]
     };
     
     let teams = [], scores = {}, currentTurn = 0, round = 1;
     let waitingForNext = false;
     let remainingSymbols = [];
+    let usedComments = {
+      selfDamage: [],
+      enemyDamage: [],
+      zeroDamage: [],
+      highDamage: []
+    };
     
     function startGame() {
       const t1 = document.getElementById('team1').value.trim() || "الفريق الأحمر";
@@ -326,8 +360,17 @@
       scores = {[t1]: startScore, [t2]: startScore};
       remainingSymbols = [...symbols];
       
+      // إعادة تعيين التعليقات المستخدمة
+      usedComments = {
+        selfDamage: [],
+        enemyDamage: [],
+        zeroDamage: [],
+        highDamage: []
+      };
+      
       document.querySelector('.team-inputs').style.display = 'none';
       document.querySelector('.selection').style.display = 'block';
+      document.getElementById('symbolsExhausted').style.display = 'none';
       waitingForNext = false;
       currentTurn = 0;
       round = 1;
@@ -344,12 +387,53 @@
       }
       
       const list = document.getElementById('symbolList');
+      
+      // التحقق من وجود رموز متبقية
+      if (remainingSymbols.length === 0) {
+        list.innerHTML = '';
+        document.getElementById('symbolsExhausted').style.display = 'block';
+        document.getElementById('effectBox').innerHTML = 
+          "لقد تم استخدام جميع الرموز! اللعبة انتهت.\n\n" +
+          `<strong style="color:#ffcc00">${teams[0]}: ${scores[teams[0]]} نقطة | ${teams[1]}: ${scores[teams[1]]} نقطة</strong>`;
+        document.getElementById('nextBtn').style.display = 'none';
+        return;
+      }
+      
       list.innerHTML = remainingSymbols.map(s =>
         `<div class="symbol${waitingForNext ? ' disabled':''}" onclick="selectSymbol(this, '${s}')">${s}</div>`
       ).join('');
       
       updateScoreDisplay();
       document.getElementById('nextBtn').style.display = waitingForNext ? 'inline-block' : 'none';
+      document.getElementById('symbolsExhausted').style.display = 'none';
+    }
+    
+    function getUniqueComment(type, team, damage) {
+      let availableComments = funnyEffects[type].filter(comment => 
+        !usedComments[type].includes(comment)
+      );
+      
+      // إذا استخدمنا جميع التعليقات، نعيد تعيين القائمة
+      if (availableComments.length === 0) {
+        usedComments[type] = [];
+        availableComments = funnyEffects[type];
+      }
+      
+      // اختيار تعليق عشوائي
+      const comment = availableComments[Math.floor(Math.random() * availableComments.length)];
+      usedComments[type].push(comment);
+      
+      // استبدال العناصر النائبة
+      return comment
+        .replace(/{team}/g, team)
+        .replace(/{damage}/g, damage);
+    }
+    
+    function getWinComment(winner, loser) {
+      const comment = funnyEffects.winComments[Math.floor(Math.random() * funnyEffects.winComments.length)];
+      return comment
+        .replace(/{team}/g, winner)
+        .replace(/{loser}/g, loser);
     }
     
     function selectSymbol(el, symbol) {
@@ -385,16 +469,13 @@
       // اختيار التعليق المناسب
       let effect;
       if (damage === 0) {
-        effect = funnyEffects.zeroDamage[Math.floor(Math.random() * funnyEffects.zeroDamage.length)];
+        effect = getUniqueComment('zeroDamage', team, damage);
       } else if (target === team) {
-        effect = funnyEffects.selfDamage[Math.floor(Math.random() * funnyEffects.selfDamage.length)];
-        effect += `\n${team} خسر ${damage} نقطة من نفسه! 😂`;
+        effect = getUniqueComment('selfDamage', team, damage);
       } else if (damage > 25) {
-        effect = funnyEffects.highDamage[Math.floor(Math.random() * funnyEffects.highDamage.length)];
-        effect += `\n${other} خسر ${damage} نقطة!`;
+        effect = getUniqueComment('highDamage', other, damage);
       } else {
-        effect = funnyEffects.normal[Math.floor(Math.random() * funnyEffects.normal.length)];
-        effect += `\n${other} خسر ${damage} نقطة!`;
+        effect = getUniqueComment('enemyDamage', other, damage);
       }
       
       document.getElementById('effectBox').innerHTML = effect;
@@ -402,7 +483,9 @@
       
       if (scores[target] <= 0) {
         scores[target] = 0;
-        document.getElementById('effectBox').innerHTML += `\n\n<strong style="color:#ff5555;font-size:24px;">${target} خسر اللعبة! 🎉</strong>`;
+        const winner = target === team ? other : team;
+        const winComment = getWinComment(winner, target);
+        document.getElementById('effectBox').innerHTML += `\n\n<strong style="color:#ff5555;font-size:24px;">${winComment}</strong>`;
         document.getElementById('symbolList').innerHTML = '';
         document.getElementById('nextBtn').style.display = 'none';
         return;
@@ -419,12 +502,9 @@
       waitingForNext = false;
       currentTurn = currentTurn === 0 ? 1 : 0;
       
+      // زيادة الجولة فقط دون إعادة تعيين الرموز
       if (currentTurn === 0) {
         round++;
-        // إعادة تعيين الرموز كل جولتين
-        if (round % 2 === 0) {
-          remainingSymbols = [...symbols];
-        }
       }
       
       showTurn();
