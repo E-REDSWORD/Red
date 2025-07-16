@@ -3,25 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لعبة طبول الحرب - النسخة المتقدمة</title>
+  <title>لعبة طبول الحرب - النسخة المحسنة</title>
   <style>
+    /* التنسيقات الأساسية */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-    
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #1a2a6c, #b21f1f, #001510);
       color: #fff;
       text-align: center;
-      direction: rtl;
+      direction: rtl; /* دعم اللغة العربية */
       padding: 15px;
       min-height: 100vh;
       overflow-x: hidden;
     }
-    
+
     .container {
       max-width: 600px;
       margin: 0 auto;
@@ -30,7 +31,7 @@
       padding: 20px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
-    
+
     h1 {
       color: #ffcc00;
       font-size: 2.5rem;
@@ -40,14 +41,14 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    
+
     .team-inputs, .selection {
       margin: 25px 0;
       padding: 15px;
       background: rgba(30, 30, 40, 0.7);
       border-radius: 12px;
     }
-    
+
     input {
       width: 100%;
       padding: 12px 15px;
@@ -58,16 +59,16 @@
       color: #fff;
       font-size: 16px;
     }
-    
+
     input::placeholder {
       color: #aaa;
     }
-    
+
     input:focus {
       outline: none;
       border-color: #ffcc00;
     }
-    
+
     button {
       padding: 12px 25px;
       font-size: 18px;
@@ -81,16 +82,16 @@
       transition: all 0.3s ease;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
-    
+
     button:hover {
       transform: translateY(-3px);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
     }
-    
+
     button:active {
       transform: translateY(1px);
     }
-    
+
     .symbols {
       display: flex;
       flex-wrap: wrap;
@@ -98,7 +99,7 @@
       margin: 15px 0;
       gap: 8px;
     }
-    
+
     .symbol {
       font-size: 28px;
       background: linear-gradient(145deg, #2c3e50, #4a6491);
@@ -114,19 +115,19 @@
       justify-content: center;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
-    
+
     .symbol:hover {
       transform: scale(1.1);
       background: linear-gradient(145deg, #4a6491, #2c3e50);
       box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
     }
-    
+
     .symbol.disabled {
       pointer-events: none;
       opacity: 0.3;
       transform: scale(0.95);
     }
-    
+
     .effect-box {
       margin: 20px auto;
       font-size: 20px;
@@ -143,7 +144,7 @@
       line-height: 1.6;
       font-weight: bold;
     }
-    
+
     #scoreDisplay {
       font-size: 22px;
       margin: 20px 0;
@@ -152,24 +153,24 @@
       border-radius: 10px;
       border: 2px solid #ffcc00;
     }
-    
+
     .score-value {
       color: #ffcc00;
       font-weight: bold;
       font-size: 24px;
     }
-    
+
     .round-info {
       font-size: 24px;
       margin: 15px 0;
       color: #4dff4d;
     }
-    
+
     .team-name {
       color: #ff9966;
       font-weight: bold;
     }
-    
+
     .developer {
       background: rgba(0, 0, 0, 0.7);
       padding: 15px;
@@ -177,37 +178,38 @@
       margin: 20px 0;
       border: 1px solid #444;
     }
-    
+
     .developer h2 {
       color: #ffcc00;
       margin-bottom: 12px;
     }
-    
+
     .developer ul {
       list-style-type: none;
       padding: 0;
     }
-    
+
     .developer li {
       margin: 8px 0;
       padding: 8px;
       background: rgba(50, 50, 70, 0.5);
       border-radius: 8px;
     }
-    
+
     .footer {
       margin-top: 25px;
       padding: 15px;
       color: #aaa;
       font-size: 14px;
     }
-    
+
     .symbols-exhausted {
       color: #ff5555;
       font-weight: bold;
       margin-top: 15px;
     }
-    
+
+    /* استجابة التصميم للشاشات الصغيرة */
     @media (max-width: 480px) {
       .symbol {
         width: 60px;
@@ -215,111 +217,98 @@
         font-size: 24px;
         padding: 10px 15px;
       }
-      
+
       h1 {
         font-size: 2rem;
       }
-      
+
       .effect-box {
         font-size: 18px;
         padding: 15px;
       }
-      
+
       #scoreDisplay {
         font-size: 18px;
       }
     }
+
+    /* تنسيقات نافذة كلمة المرور */
+    #passwordOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom right, #222, #444);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    #passwordBox {
+      background: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      text-align: center;
+      max-width: 300px;
+      width: 100%;
+      font-family: Arial, sans-serif;
+      color: black;
+    }
+
+    #passwordBox input[type="password"] {
+      width: 90%;
+      padding: 10px;
+      margin-top: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    #passwordBox button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #e91e63;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #passwordBox button:hover {
+      background-color: #c2185b;
+    }
+
+    #errorMsg {
+      color: red;
+      margin-top: 10px;
+      display: none;
+      font-size: 14px;
+    }
   </style>
 </head>
-<style>
-  #passwordOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom right, #222, #444);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
-
-  #passwordBox {
-    background: #fff;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    text-align: center;
-    max-width: 300px;
-    width: 100%;
-    font-family: Arial, sans-serif;
-    color: black; /* ✅ إضافة لون النص الأسود */
-  }
-
-  #passwordBox input[type="password"] {
-    width: 90%;
-    padding: 10px;
-    margin-top: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-  }
-
-  #passwordBox button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #e91e63;
-    border: none;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-
-  #passwordBox button:hover {
-    background-color: #c2185b;
-  }
-
-  #errorMsg {
-    color: red;
-    margin-top: 10px;
-    display: none;
-    font-size: 14px;
-  }
-</style>
-
-<div id="passwordOverlay">
-  <div id="passwordBox">
-    <h1>🎮 العاب
-      <li>𖤍|𝐑𝐄𝐃𝐒𝐖𝐎𝐑𝐃</li>
-    </h1>
-
-    <h2>🔒 كلمة المرور مطلوبة
-      <li>الرجاء التواصل معنا للحصول على كلمة المرور</li>
-    </h2>
-
-    <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" />
-    <div id="errorMsg">كلمة المرور غير صحيحة!</div>
-    <button onclick="checkPassword()">دخول</button>
-  </div>
-</div>
-
-<script>
-  const correctPassword = "12345"; // غيّر كلمة المرور هنا
-
-  function checkPassword() {
-    const input = document.getElementById("passwordInput").value;
-    const errorMsg = document.getElementById("errorMsg");
-
-    if (input === correctPassword) {
-      document.getElementById("passwordOverlay").style.display = "none";
-    } else {
-      errorMsg.style.display = "block";
-    }
-  }
-</script>
 <body>
+  <!-- نافذة كلمة المرور -->
+  <div id="passwordOverlay">
+    <div id="passwordBox">
+      <h1>🎮 العاب
+        <li>𖤍|𝐑𝐄𝐃𝐒𝐖𝐎𝐑𝐃</li>
+      </h1>
+
+      <h2>🔒 كلمة المرور مطلوبة
+        <li>الرجاء التواصل معنا للحصول على كلمة المرور</li>
+      </h2>
+
+      <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" />
+      <div id="errorMsg">كلمة المرور غير صحيحة!</div>
+      <button onclick="checkPassword()">دخول</button>
+    </div>
+  </div>
+
+  <!-- محتوى اللعبة -->
   <div class="container">
     <div class="developer">
       <h2>𖤍 | 𝐑𝐄𝐃𝐒𝐖𝐎𝐑𝐃 & فريق التطوير</h2>
@@ -329,269 +318,481 @@
         <li>سارا – جرافيك وتصميم</li>
       </ul>
     </div>
-    
+
     <h1>لعبة طبول الحرب ⚔️</h1>
-    
+
     <div class="team-inputs">
       <input type="text" id="team1" placeholder="اسم الفريق الأول" value="الفريق الأحمر" />
       <input type="text" id="team2" placeholder="اسم الفريق الثاني" value="الفريق الأزرق" />
       <input type="number" id="startScore" placeholder="النقاط الابتدائية" value="400" />
       <button onclick="startGame()">ابدأ اللعبة</button>
     </div>
-    
+
     <div class="selection" style="display:none">
       <div class="round-info" id="roundInfo">الجولة 1</div>
       <p><strong id="currentTeam" class="team-name"></strong> اختر رمزك:</p>
-      
+
       <div class="symbols" id="symbolList"></div>
       <div id="symbolsExhausted" class="symbols-exhausted" style="display:none">
         لقد تم استخدام جميع الرموز! اللعبة انتهت.
       </div>
-      
+
       <div class="effect-box" id="effectBox">اختر رمزًا لبدء الجولة الأولى!</div>
-      
+
       <button id="nextBtn" style="display:none; margin-top:20px;" onclick="nextTurn()">التالي</button>
-      
+
       <div id="scoreDisplay"></div>
     </div>
-    
+
     <div class="footer">
-      تم تطوير اللعبة بدقة لتكون متوافقة مع   الهواتف الذكية عن طريق فريق تطوير   __    𖤍 | 𝐑𝐄𝐃𝐒𝐖𝐎𝐑𝐃 - استمتع بالتجربة! الاصدار 0.2
+      تم تطوير اللعبة بدقة لتكون متوافقة مع الهواتف الذكية عن طريق فريق تطوير __ 𖤍 | 𝐑𝐄𝐃𝐒𝐖𝐎𝐑𝐃 - استمتع بالتجربة! الاصدار 0.5
     </div>
   </div>
 
   <script>
-    const symbols = [
-      ...Array.from({length: 20}, (_, i) => (i+1).toString()),
+    // كلمة المرور للوصول للعبة
+    const correctPassword = "12345"; // غيّر كلمة المرور هنا
+
+    function checkPassword() {
+      const input = document.getElementById("passwordInput").value;
+      const errorMsg = document.getElementById("errorMsg");
+
+      if (input === correctPassword) {
+        document.getElementById("passwordOverlay").style.display = "none";
+      } else {
+        errorMsg.style.display = "block";
+      }
+    }
+
+    // مجموعة الرموز بالترتيب الثابت المطلوب
+    const fixedOrderedSymbols = [
+      // الأرقام (20 رمزًا)
+      '1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20',
+      // الحيوانات (20 رمزًا)
       '🐘','🦒','🦁','🦌','🐪','🦘','🐎','🐄','🐸','🐟','🐢','🐍','🐈','🐀','🐓','🦆','🕊️','🦋','🐌','🐇',
+      // الأشكال الأخرى (20 رمزًا)
       '❤️','👁️','✈️','⚽','✏️','🪶','🌛','⭐','✉️','📞','📷','🔍','🧲','💣','🔑','🔒','🏠','💼','🎵','💡'
     ];
-    
-    const funnyEffects = {
-      selfDamage: [
-        "شبح نبض الأحول جعلك يا فريق {team} تخسر {damage} من النقاط! 👻",
-        "لقد سحرتك عين الحسود! {team} يخسر {damage} نقطة من نفسه! 👁️",
-        "يا للكارثة! {team} يطلق النار على قدمه ويخسر {damage} نقطة! 🔫",
-        "من يلعب بالنار يحترق! {team} يخسر {damage} نقطة من نفسه! 🔥",
-        "هل هذه استراتيجية جديدة؟ {team} يخسر {damage} نقطة من نفسه! 🤔",
-        "السحر الأسود يعود! {team} يخسر {damage} نقطة من نفسه! 🔮",
-        "اللعنة تطاردك! {team} يخسر {damage} نقطة من نفسه! 😱",
-        "الجنون يضرب من جديد! {team} يخسر {damage} نقطة من نفسه! 🤪",
-        "الشيطان يوسوس لك! {team} يخسر {damage} نقطة من نفسه! 😈",
-        "الغضب أعمى البصيرة! {team} يخسر {damage} نقطة من نفسه! 😤"
-      ],
-      enemyDamage: [
-        "طائرة إف 16 شنت عدة غارات على فريق {team} وتسببت بخصم {damage} نقطة! ✈️",
 
-"غواصة جيش هتلر النازي تقذف النار على فريق {team} وتسببت بخصم {damage} نقطة! 🚤🛸",
-"جيش الملك دراغون يساعدك على غزو فريق {team} وتسببت بخصم {damage} نقطة منهم! ⚔️🗡️",
-"طائرة الشبح الإمريكية شنت عدة غارات على فريق {team} وتسببت لهم بأضرار جسيمة خصمت منهم  {damage} نقطة! ✈️",        
-        "جيش من التنانين يهاجم فريق {team} ويخسر {damage} نقطة! 🐉",
-        "زلزال مدمر يضرب معسكر فريق {team} ويخسر {damage} نقطة! 🌋",
-        "سيل جارف يغمر فريق {team} ويخسر {damage} نقطة! 🌊",
-        "قنابل عنقودية تنهال على فريق {team} وتخسر {damage} نقطة! 💣",
-        "هجوم بري متكامل على فريق {team} ويخسر {damage} نقطة! ⚔️",
-        "أسطول بحري يقصف فريق {team} ويخسر {damage} نقطة! ⚓",
-        "سهام سامة تنهال على فريق {team} وتخسر {damage} نقطة! 🏹",
-        "غزو فضائي لفريق {team} ويخسر {damage} نقطة! 👽",
-        "عاصفة رملية تعمي فريق {team} ويخسر {damage} نقطة! 🌪️"
-      ],
-      zeroDamage: [
-        "يا للهول! لقد اختار رمزًا ضعيفًا جدًا... لا شيء يحدث! 🥱",
-        "هذا الرمز كان مجرد وهم... لا تأثير! 👻",
-        "لمسة دافئة... لكن لا ضرر! ☕",
-        "كانت هذه محاولة فاشلة! 😅",
-        "الريح تحمل الأوراق... لا ضرر ولا ندم! 🍃",
-        "الخصم لم يشعر بأي شيء! 😌",
-        "ربما تحتاج إلى شحن الرمز؟ 🔋",
-        "السحر لم يعمل هذه المرة! ✨",
-        "الطلقة طائشة... لا إصابة! 💫",
-        "التعويذة انتهت صلاحيتها! 📜"
-      ],
-      highDamage: [
-        "ضربة نووية! فريق {team} يخسر {damage} نقطة! ☢️",
-        "كارثة كونية! فريق {team} يخسر {damage} نقطة! 🌌",
-        "إبادة جماعية! فريق {team} يخسر {damage} نقطة! 💀",
-        "الدمار الشامل! فريق {team} يخسر {damage} نقطة! 💥",
-        "القضاء المبرم! فريق {team} يخسر {damage} نقطة! ⚡",
-        "الغضب الإلهي! فريق {team} يخسر {damage} نقطة! ⚠️",
-        "الطوفان العظيم! فريق {team} يخسر {damage} نقطة! 🌧️",
-        "البركان الثائر! فريق {team} يخسر {damage} نقطة! 🌋",
-        "التسونامي المدمر! فريق {team} يخسر {damage} نقطة! 🌊",
-        "الإنهيار الأرضي! فريق {team} يخسر {damage} نقطة! 🏔"
-      ],
-      winComments: [
-        "لقد سقط الجدار! {team} يهزم {loser} وينتصر! 🏆",
-        "النصر الساحق! {team} يهزم {loser} ببراعة! 🎯",
-        "السيادة المطلقة! {team} يسيطر على المعركة! 👑",
-        "الإمبراطورية تسقط! {loser} ينهزم أمام {team}! 🏰",
-        "الأسطورة تتحقق! {team} ينتصر على {loser}! 🦸",
-        "القيادة العسكرية تثبت تفوقها! {team} يهزم {loser}! 🪖",
-        "الاستراتيجية البارعة تقود {team} للنصر! 🧠",
-        "الضربة القاضية! {team} ينهي {loser}! 🥊"
-      ]
+    // مجموعة التأثيرات الرئيسية (60 تأثيرًا فريدًا)
+    // كل تأثير له قيمة ضرر أساسية ونوع.
+    const masterEffectPool = [
+        // تأثيرات بدون ضرر (3)
+        { damage: 0, type: 'zero' },
+        { damage: 0, type: 'zero' },
+        { damage: 0, type: 'zero' },
+
+        // تأثيرات بضرر أساسي (57 تأثيرًا)
+        // تتوزع هذه التأثيرات على 57 رمزًا متبقيًا
+        // الضرر الأساسي سيتم تعديله لـ 20 كحد أقصى إذا كان الخصم من نفس الفريق
+        // تم التأكد من أن كل قيمة ضرر لا تتكرر لأكثر من 4 تأثيرات كحد أقصى
+        { damage: 1, type: 'damaging' }, { damage: 1, type: 'damaging' },
+        { damage: 2, type: 'damaging' }, { damage: 2, type: 'damaging' },
+        { damage: 3, type: 'damaging' },
+        { damage: 4, type: 'damaging' },
+        { damage: 5, type: 'damaging' }, { damage: 5, type: 'damaging' }, { damage: 5, type: 'damaging' },
+        { damage: 6, type: 'damaging' },
+        { damage: 7, type: 'damaging' }, { damage: 7, type: 'damaging' },
+        { damage: 8, type: 'damaging' }, { damage: 8, type: 'damaging' },
+        { damage: 9, type: 'damaging' },
+        { damage: 10, type: 'damaging' }, { damage: 10, type: 'damaging' }, { damage: 10, type: 'damaging' }, { damage: 10, type: 'damaging' }, // 4 مرات
+        { damage: 11, type: 'damaging' },
+        { damage: 12, type: 'damaging' }, { damage: 12, type: 'damaging' }, { damage: 12, type: 'damaging' },
+        { damage: 13, type: 'damaging' }, { damage: 13, type: 'damaging' },
+        { damage: 14, type: 'damaging' },
+        { damage: 15, type: 'damaging' }, { damage: 15, type: 'damaging' }, { damage: 15, type: 'damaging' }, { damage: 15, type: 'damaging' }, // 4 مرات
+        { damage: 16, type: 'damaging' }, { damage: 16, type: 'damaging' },
+        { damage: 17, type: 'damaging' }, { damage: 17, type: 'damaging' },
+        { damage: 18, type: 'damaging' }, { damage: 18, type: 'damaging' },
+        { damage: 19, type: 'damaging' }, { damage: 19, type: 'damaging' },
+        { damage: 20, type: 'damaging' }, { damage: 20, type: 'damaging' }, { damage: 20, type: 'damaging' },
+        { damage: 22, type: 'damaging' },
+        { damage: 24, type: 'damaging' },
+        { damage: 25, type: 'damaging' },
+        { damage: 26, type: 'damaging' },
+        { damage: 28, type: 'damaging' },
+        { damage: 30, type: 'damaging' }, { damage: 30, type: 'damaging' },
+        { damage: 32, type: 'damaging' },
+        { damage: 34, type: 'damaging' },
+        { damage: 35, type: 'damaging' },
+        { damage: 36, type: 'damaging' },
+        { damage: 38, type: 'damaging' },
+        { damage: 40, type: 'damaging' }, { damage: 40, type: 'damaging' },
+        { damage: 52, type: 'damaging' }, { damage: 52, type: 'damaging' } // الرموز النادرة
+    ];
+
+
+    // أسماء التأثيرات وتعليقاتها، مصنفة حسب نوع الضرر وقيمته
+    const effectDetailsPool = {
+        zero: [
+            { name: "هدوء ما قبل العاصفة", comment: "لا شيء يحدث! مجرد وهم عابر في ساحة المعركة. 🍃" },
+            { name: "ضباب الحرب", comment: "الرؤية معدومة، لا إصابة! الجولة تمر بسلام زائف. 🌫️" },
+            { name: "فشل الإطلاق", comment: "قذيفة فارغة! لا ضرر يذكر في هذه الجولة. 💣" },
+            { name: "صمت المقابر", comment: "صمت رهيب يلف الأجواء، لا حركة، لا ضرر. 🤫" },
+            { name: "سراب الأمل", comment: "وهم يخدع الأعداء، لكن بلا تأثير حقيقي. ✨" },
+            { name: "ريح عابرة", comment: "مرت الريح دون أن تحمل معها شيئاً. 🌬️" },
+            { name: "فشل التجسس", comment: "محاولة تجسس باءت بالفشل، لا معلومات، لا ضرر. 🕵️" }
+        ],
+        self: { // تأثيرات الخصم من النفس
+            low: [ // ضرر 1-5
+                { name: "نيران صديقة", comment: "رصاصة طائشة تصيب فريق {team} وتخصم {damage} نقطة!" },
+                { name: "خطأ تكتيكي", comment: "قرار خاطئ يكلف فريق {team} {damage} نقطة من نقاطه!" },
+                { name: "فخ ذاتي", comment: "فريق {team} يسقط في فخه الخاص ويخسر {damage} نقطة!" },
+                { name: "انزلاق مفاجئ", comment: "عثرة غير متوقعة تسبب خسارة {damage} نقطة لفريق {team}!" },
+                { name: "طعنة الغدر", comment: "خنجر من الخلف يخصم {damage} نقطة من فريق {team}!" },
+                { name: "تراجع معنوي", comment: "انهيار بسيط في الروح المعنوية يكلف فريق {team} {damage} نقطة!" },
+                { name: "تمرد داخلي", comment: "فوضى عارمة داخل صفوف فريق {team} تخسره {damage} نقطة!" },
+                { name: "ارتباك الصفوف", comment: "تضارب الأوامر يخصم {damage} نقطة من فريق {team}!" },
+                { name: "إصابة غير مقصودة", comment: "جندي من فريق {team} يصاب عن طريق الخطأ ويخسر {damage} نقطة!" },
+                { name: "فقدان الإمدادات", comment: "إمدادات حيوية لفريق {team} تضيع وتكلفهم {damage} نقطة!" },
+                { name: "تشتت الانتباه", comment: "صوت غريب يشتت انتباه فريق {team} ويخصم {damage} نقطة!" },
+                { name: "شبح الماضي", comment: "شبح من الماضي يطارد فريق {team} ويخصم {damage} نقطة!" }
+            ],
+            medium: [ // ضرر 6-15
+                { name: "نيران صديقة مكثفة", comment: "قذائف مدفعية طائشة تصيب فريق {team} وتخصم {damage} نقطة!" },
+                { name: "فشل لوجستي", comment: "إمدادات فريق {team} تتعرض للنهب وتخسر {damage} نقطة!" },
+                { name: "خطأ استراتيجي", comment: "مناورة فاشلة تكلف فريق {team} {damage} نقطة!" },
+                { name: "هجوم عكسي", comment: "هجوم فاشل يرتد على فريق {team} ويخصم {damage} نقطة!" },
+                { name: "تشتت الاتصالات", comment: "رسالة مشفرة خاطئة تشتت فريق {team} وتخصم {damage} نقطة!" },
+                { name: "فخاخ مموهة", comment: "فريق {team} يسقط في فخاخه المموهة ويخسر {damage} نقطة!" },
+                { name: "تدمير القاعدة", comment: "انهيار جزء من قاعدة فريق {team} يكلفهم {damage} نقطة!" },
+                { name: "ارتداد السحر", comment: "تعويذة سحرية ترتد على فريق {team} وتخصم {damage} نقطة!" },
+                { name: "ثقب في الدفاع", comment: "ثغرة في دفاعات فريق {team} تكلفهم {damage} نقطة!" },
+                { name: "خسارة القيادة", comment: "فريق {team} يفقد قائداً مهماً ويخسر {damage} نقطة!" },
+                { name: "عاصفة رملية", comment: "عاصفة رملية مفاجئة تضرب فريق {team} وتخصم {damage} نقطة!" }
+            ],
+            high: [ // ضرر 16-20 (الحد الأقصى للخصم الذاتي)
+                { name: "لعنة الحرب", comment: "ضربة قاضية من سوء الحظ تضرب فريق {team} وتخصم {damage} نقطة!" },
+                { name: "انتحار تكتيكي", comment: "قرار كارثي يخصم {damage} نقطة من فريق {team}!" },
+                { name: "خسارة فادحة", comment: "فريق {team} يتكبد خسائر فادحة ويخسر {damage} نقطة!" },
+                { name: "انهيار نفسي", comment: "انهيار نفسي جماعي يضرب فريق {team} ويخصم {damage} نقطة!" }
+            ]
+        },
+        enemy: { // تأثيرات الخصم من العدو
+            low: [ // ضرر 1-15
+                { name: "ضربة القناص", comment: "قناص ماهر يصيب فريق {team} بدقة ويخصم {damage} نقطة!" },
+                { name: "تكتيك التشتيت", comment: "مناورة سريعة تشتت انتباه فريق {team} وتخصم {damage} نقطة!" },
+                { name: "اختراق الاتصالات", comment: "رسالة مشفرة مدمرة تخترق دفاعات فريق {team} وتخصم {damage} نقطة!" },
+                { name: "هجوم الفجر", comment: "هجوم مباغت في الفجر على فريق {team} يخصم {damage} نقطة!" },
+                { name: "عملية تخريب", comment: "عميل سري يزرع الفزع في صفوف فريق {team} ويخصم {damage} نقطة!" },
+                { name: "كمين مفاجئ", comment: "كمين محكم يباغت فريق {team} ويخصم {damage} نقطة!" },
+                { name: "صدمة صوتية", comment: "انفجار صوتي يربك فريق {team} ويخصم {damage} نقطة!" },
+                { name: "غارة خاطفة", comment: "غارة جوية سريعة تضرب فريق {team} وتخصم {damage} نقطة!" },
+                { name: "ثلاثي الرعب", comment: "ثلاث قذائف متتالية تضرب فريق {team} وتخصم {damage} نقطة!" },
+                { name: "سموم الحرب", comment: "غاز سام ينتشر في معسكر فريق {team} ويخصم {damage} نقطة!" },
+                { name: "هجوم رباعي", comment: "أربع دبابات تتقدم نحو فريق {team} وتخصم {damage} نقطة!" },
+                { name: "وحدة كوماندوز", comment: "وحدة كوماندوز سريعة تتسلل لمعسكر فريق {team} وتخصم {damage} نقطة!" },
+                { name: "خمسة جنود نخبة", comment: "خمسة جنود نخبة يهاجمون فريق {team} ويخصمون {damage} نقطة!" },
+                { name: "تكتيك الحصار", comment: "حصار محكم يطبق على فريق {team} ويخصم {damage} نقطة!" },
+                { name: "ظلام دامس", comment: "ظلام دامس يلف معسكر فريق {team} ويخصم {damage} نقطة!" },
+                { name: "فخ الموت", comment: "فخ محكم ينصب لفريق {team} ويخصم {damage} نقطة!" },
+                { name: "سهم الغدر", comment: "سهم مسموم يصيب فريق {team} ويخصم {damage} نقطة!" },
+                { name: "عاصفة الرصاص", comment: "عاصفة من الرصاص تنهال على فريق {team} وتخصم {damage} نقطة!" },
+                { name: "خدعة ذكية", comment: "خدعة ذكية تضلل فريق {team} وتخصم {damage} نقطة!" },
+                { name: "فخاخ متفجرة", comment: "فخاخ متفجرة تنفجر في طريق فريق {team} وتخصم {damage} نقطة!" }
+            ],
+            medium: [ // ضرر 16-26
+                { name: "سبع ضربات قاضية", comment: "سبع ضربات متتالية تنهال على فريق {team} وتخصم {damage} نقطة!" },
+                { name: "خطة جهنمية", comment: "خطة جهنمية تنفذ ضد فريق {team} وتخصم {damage} نقطة!" },
+                { name: "ثمانية مدافع", comment: "ثمانية مدافع تطلق النار على فريق {team} وتخصم {damage} نقطة!" },
+                { name: "إغلاق الطرق", comment: "جميع طرق الإمداد لفريق {team} تغلق ويخسر {damage} نقطة!" },
+                { name: "تسعة صواريخ", comment: "تسعة صواريخ باليستية تضرب فريق {team} وتخصم {damage} نقطة!" },
+                { name: "هجوم مضاد", comment: "هجوم مضاد عنيف يرتد على فريق {team} ويخصم {damage} نقطة!" },
+                { name: "عشرة عمالقة", comment: "عشرة عمالقة يهاجمون فريق {team} ويخصمون {damage} نقطة!" },
+                { name: "خسائر اقتصادية", comment: "انهيار اقتصادي مفاجئ يضرب فريق {team} ويخصم {damage} نقطة!" },
+                { name: "اثنا عشرة ضربة جوية", comment: "اثنا عشرة ضربة جوية مكثفة تضرب فريق {team} وتخصم {damage} نقطة!" },
+                { name: "تجسس العدو", comment: "عملية تجسس ناجحة تكشف نقاط ضعف فريق {team} وتخصم {damage} نقطة!" },
+                { name: "انهيار أرضي", comment: "انهيار أرضي مفاجئ يبتلع جزءاً من معسكر فريق {team} ويخصم {damage} نقطة!" },
+                { name: "هجوم المدرعات", comment: "أربعة عشرة مدرعة تقتحم صفوف فريق {team} وتخصم {damage} نقطة!" },
+                { name: "اجتياح الفيلة الحربية", comment: "فيلة حربية ضخمة تجتاح معسكر فريق {team} وتخصم {damage} نقطة!" },
+                { name: "زلزال مدمر", comment: "زلزال بقوة 15 درجة يضرب قاعدة فريق {team} ويخصم {damage} نقطة!" },
+                { name: "عاصفة نارية", comment: "عاصفة نارية تلتهم معسكر فريق {team} وتخصم {damage} نقطة!" },
+                { name: "غزو الظلام", comment: "قوات الظلام تغزو فريق {team} وتخصم {damage} نقطة!" }
+            ],
+            high: [ // ضرر 28-40
+                { name: "فرسان الظلام", comment: "هجوم فرسان الظلام يرهب فريق {team} ويخصم {damage} نقطة!" },
+                { name: "هجوم الوحش", comment: "وحش كاسر يقتحم صفوف فريق {team} ويخصم {damage} نقطة!" },
+                { name: "قصف جوي شامل", comment: "قصف جوي شامل يدمر دفاعات فريق {team} ويخصم {damage} نقطة!" },
+                { name: "إعصار الدمار", comment: "إعصار مدمر يضرب معسكر فريق {team} ويخصم {damage} نقطة!" },
+                { name: "ثورة البراكين", comment: "براكين غاضبة تثور تحت أقدام فريق {team} وتخصم {damage} نقطة!" },
+                { name: "سم الأفاعي", comment: "سم الأفاعي القاتل ينتشر في صفوف فريق {team} ويخصم {damage} نقطة!" },
+                { name: "طوفان الغضب", comment: "طوفان هائل يغمر معسكر فريق {team} ويخصم {damage} نقطة!" },
+                { name: "دمار شامل", comment: "دمار شامل يلحق بصفوف فريق {team} ويخصم {damage} نقطة!" },
+                { name: "الضربة النهائية", comment: "الضربة النهائية تزلزل فريق {team} وتخصم {damage} نقطة!" },
+                { name: "انفجار نووي", comment: "انفجار نووي يدمر معسكر فريق {team} ويخصم {damage} نقطة!" },
+                { name: "غزو التنانين", comment: "جيش من التنانين يحرق معسكر فريق {team} ويخصم {damage} نقطة!" },
+                { name: "نهاية العالم", comment: "كارثة كونية تضرب فريق {team} وتخصم {damage} نقطة!" }
+            ],
+            rare: [ // ضرر 52
+                { name: "صيحة الجحيم", comment: "صيحة الجحيم المدوية تزلزل فريق {team} وتخصم منه {damage} نقطة! 🔥" },
+                { name: "نهاية الكون", comment: "انفجار نجمي يدمر كل شيء في طريقه، ويخصم {damage} نقطة من فريق {team}! 🌌" }
+            ]
+        }
     };
-    
+
+
+    // أسماء الجولات الحماسية
+    const roundNamesPool = [
+      "جولة الفجر الدامي", "جولة صدى المعركة", "جولة أنفاس الشيطان", "جولة عواء الذئاب",
+      "جولة صرخات الأشباح", "جولة رقصة الموت", "جولة ظل الخيانة", "جولة قلب الظلام",
+      "جولة بوابة الجحيم", "جولة نهاية الزمن", "جولة العاصفة السوداء", "جولة نبض الرعب",
+      "جولة صمت المقابر", "جولة حافة الهاوية", "جولة نار الانتقام", "جولة لعنة الأجداد"
+    ];
+
+    // تعليقات الفوز (لا تزال عشوائية)
+    const winCommentsPool = [
+      "لقد سقط الجدار! {team} يهزم {loser} وينتصر! 🏆",
+      "النصر الساحق! {team} يهزم {loser} ببراعة! 🎯",
+      "السيادة المطلقة! {team} يسيطر على المعركة! 👑",
+      "الإمبراطورية تسقط! {loser} ينهزم أمام {team}! 🏰",
+      "الأسطورة تتحقق! {team} ينتصر على {loser}! 🦸",
+      "القيادة العسكرية تثبت تفوقها! {team} يهزم {loser}! 🪖",
+      "الاستراتيجية البارعة تقود {team} للنصر! 🧠",
+      "الضربة القاضية! {team} ينهي {loser}! 🥊"
+    ];
+
     let teams = [], scores = {}, currentTurn = 0, round = 1;
     let waitingForNext = false;
-    let remainingSymbols = [];
-    let usedComments = {
-      selfDamage: [],
-      enemyDamage: [],
-      zeroDamage: [],
-      highDamage: []
-    };
-    
+    let remainingSymbols = []; // قائمة الرموز المتبقية في اللعبة (بالترتيب الثابت)
+    let symbolEffectsMap = new Map(); // خريطة لربط الرمز بتأثيره العشوائي لهذه المعركة
+    let usedRoundNames = []; // أسماء الجولات المستخدمة لمنع التكرار
+    let currentRoundName = "";
+    let usedEffectDetailsTracker = new Map(); // لتتبع استخدام كل تأثير (الاسم والتعليق)
+
+    // دالة لخلط المصفوفة (Fisher-Yates shuffle)
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // دالة للحصول على تفاصيل التأثير (الاسم والتعليق) بناءً على النوع والضرر
+    function getDynamicEffectDetails(targetType, damageValue, teamName) {
+        let poolCategory;
+        if (targetType === 'zero') {
+            poolCategory = effectDetailsPool.zero;
+        } else if (targetType === 'self') {
+            if (damageValue <= 5) {
+                poolCategory = effectDetailsPool.self.low;
+            } else if (damageValue <= 15) {
+                poolCategory = effectDetailsPool.self.medium;
+            } else { // damageValue <= 20
+                poolCategory = effectDetailsPool.self.high;
+            }
+        } else { // targetType === 'enemy'
+            if (damageValue <= 15) {
+                poolCategory = effectDetailsPool.enemy.low;
+            } else if (damageValue <= 26) {
+                poolCategory = effectDetailsPool.enemy.medium;
+            } else if (damageValue <= 40) {
+                poolCategory = effectDetailsPool.enemy.high;
+            } else { // damageValue === 52
+                poolCategory = effectDetailsPool.enemy.rare;
+            }
+        }
+
+        // تصفية التأثيرات المتاحة بناءً على عدد مرات الاستخدام
+        let availableDetails = poolCategory.filter(effect => {
+            const effectKey = `${effect.name}|${effect.comment}`; // مفتاح فريد للتأثير
+            return (usedEffectDetailsTracker.get(effectKey) || 0) < 2; // يمكن استخدامه مرتين كحد أقصى
+        });
+
+        // إذا لم تكن هناك تأثيرات متاحة (تم استخدامها مرتين)، نختار من كل ما هو متاح
+        if (availableDetails.length === 0) {
+            availableDetails = poolCategory;
+            console.warn(`تحذير: جميع التأثيرات في فئة ${targetType} بضرر ${damageValue} قد استخدمت مرتين. يتم إعادة استخدامها.`);
+        }
+
+        const selectedEffect = availableDetails[Math.floor(Math.random() * availableDetails.length)];
+        const effectKey = `${selectedEffect.name}|${selectedEffect.comment}`;
+        usedEffectDetailsTracker.set(effectKey, (usedEffectDetailsTracker.get(effectKey) || 0) + 1);
+
+        return {
+            name: selectedEffect.name,
+            comment: selectedEffect.comment.replace(/{team}/g, teamName).replace(/{damage}/g, damageValue)
+        };
+    }
+
     function startGame() {
       const t1 = document.getElementById('team1').value.trim() || "الفريق الأحمر";
       const t2 = document.getElementById('team2').value.trim() || "الفريق الأزرق";
       const startScore = parseInt(document.getElementById('startScore').value) || 400;
-      
+
       teams = [t1, t2];
       scores = {[t1]: startScore, [t2]: startScore};
-      remainingSymbols = [...symbols];
-      
-      usedComments = {
-        selfDamage: [],
-        enemyDamage: [],
-        zeroDamage: [],
-        highDamage: []
-      };
-      
+
+      // إعادة تعيين الرموز المتبقية بالترتيب الثابت
+      remainingSymbols = [...fixedOrderedSymbols];
+
+      // إعادة تعيين متتبع استخدام التأثيرات لكل لعبة جديدة
+      usedEffectDetailsTracker = new Map();
+
+      // تخصيص التأثيرات بشكل عشوائي للرموز في هذه المعركة
+      symbolEffectsMap = new Map(); // إعادة تعيين الخريطة لكل لعبة جديدة
+      let availableEffects = shuffleArray([...masterEffectPool]); // خلط مجموعة التأثيرات الرئيسية
+
+      // تخصيص تأثير فريد لكل رمز في الترتيب الثابت
+      for (let i = 0; i < fixedOrderedSymbols.length; i++) {
+          const currentSymbol = fixedOrderedSymbols[i];
+          const assignedEffect = availableEffects.pop(); // سحب تأثير واحد من المجموعة المخلطة
+          symbolEffectsMap.set(currentSymbol, assignedEffect);
+      }
+
+      // خلط أسماء الجولات وإعادة تعيينها
+      usedRoundNames = shuffleArray([...roundNamesPool]);
+
       document.querySelector('.team-inputs').style.display = 'none';
       document.querySelector('.selection').style.display = 'block';
       document.getElementById('symbolsExhausted').style.display = 'none';
       waitingForNext = false;
       currentTurn = 0;
       round = 1;
-      
+
       showTurn();
     }
-    
+
     function showTurn() {
-      document.getElementById('roundInfo').textContent = `الجولة ${round}`;
+      // اختيار اسم جولة فريد
+      if (usedRoundNames.length === 0) {
+        usedRoundNames = shuffleArray([...roundNamesPool]); // إعادة تعبئة إذا نفدت الأسماء
+      }
+      currentRoundName = usedRoundNames.shift(); // الحصول على اسم جولة فريد
+
+      document.getElementById('roundInfo').textContent = `${currentRoundName} - الجولة ${round}`;
       document.getElementById('currentTeam').textContent = `دور ${teams[currentTurn]}`;
-      
+
       if (!waitingForNext) {
         document.getElementById('effectBox').textContent = "اختر رمزًا لبدء هذه الجولة!";
       }
-      
+
       const list = document.getElementById('symbolList');
-      
+
       if (remainingSymbols.length === 0) {
         list.innerHTML = '';
         document.getElementById('symbolsExhausted').style.display = 'block';
-        document.getElementById('effectBox').innerHTML = 
+        document.getElementById('effectBox').innerHTML =
           "لقد تم استخدام جميع الرموز! اللعبة انتهت.\n\n" +
           `<strong style="color:#ffcc00">${teams[0]}: ${scores[teams[0]]} نقطة | ${teams[1]}: ${scores[teams[1]]} نقطة</strong>`;
         document.getElementById('nextBtn').style.display = 'none';
         return;
       }
-      
+
+      // عرض الرموز المتبقية فقط
       list.innerHTML = remainingSymbols.map(s =>
         `<div class="symbol${waitingForNext ? ' disabled':''}" onclick="selectSymbol(this, '${s}')">${s}</div>`
       ).join('');
-      
+
       updateScoreDisplay();
       document.getElementById('nextBtn').style.display = waitingForNext ? 'inline-block' : 'none';
       document.getElementById('symbolsExhausted').style.display = 'none';
     }
-    
-    function getUniqueComment(type, team, damage) {
-      let availableComments = funnyEffects[type].filter(comment => 
-        !usedComments[type].includes(comment)
-      );
-      
-      if (availableComments.length === 0) {
-        usedComments[type] = [];
-        availableComments = funnyEffects[type];
-      }
-      
-      const comment = availableComments[Math.floor(Math.random() * availableComments.length)];
-      usedComments[type].push(comment);
-      
-      return comment
-        .replace(/{team}/g, team)
-        .replace(/{damage}/g, damage);
-    }
-    
+
+    // دالة للحصول على تعليق الفوز
     function getWinComment(winner, loser) {
-      const comment = funnyEffects.winComments[Math.floor(Math.random() * funnyEffects.winComments.length)];
+      const comment = winCommentsPool[Math.floor(Math.random() * winCommentsPool.length)];
       return comment
         .replace(/{team}/g, winner)
         .replace(/{loser}/g, loser);
     }
-    
+
     function selectSymbol(el, symbol) {
       if (waitingForNext) return;
-      
+
       const team = teams[currentTurn];
       const other = teams[1 - currentTurn];
-      
-      const target = Math.random() < 0.5 ? team : other;
-      
-      let damage;
-      const rand = Math.random();
-      
-      if (rand < 0.1) {
-        damage = 0;
-      } else if (rand < 0.8) {
-        damage = 7 + Math.floor(Math.random() * 12);
-      } else if (rand < 0.95) {
-        damage = 24 + Math.floor(Math.random() * 6);
-      } else {
-        damage = 31 + Math.floor(Math.random() * 14);
+      // الحصول على التأثير المخصص للرمز في هذه المعركة
+      let effectData = symbolEffectsMap.get(symbol);
+
+      if (!effectData) {
+          console.error("Symbol effect not found for:", symbol);
+          effectData = { damage: 0, type: 'zero' }; // تأثير افتراضي لتجنب الأخطاء
       }
-      
-      scores[target] -= damage;
-      
-      let effect;
-      if (damage === 0) {
-        effect = getUniqueComment('zeroDamage', team, damage);
-      } else if (target === team) {
-        effect = getUniqueComment('selfDamage', team, damage);
-      } else if (damage > 25) {
-        effect = getUniqueComment('highDamage', other, damage);
-      } else {
-        effect = getUniqueComment('enemyDamage', other, damage);
+
+      let actualDamage = effectData.damage;
+      let targetTeam = "";
+      let finalTargetType = ""; // لتحديد نوع التأثير (صفر، ذاتي، عدو) لـ getDynamicEffectDetails
+
+      if (effectData.type === 'zero') {
+          targetTeam = team; // لا يهم الفريق المستهدف فالضرر صفر
+          actualDamage = 0;
+          finalTargetType = 'zero';
+      } else { // إذا كان التأثير يسبب ضررًا (type: 'damaging')
+          // 50% احتمال للخصم من نفس الفريق، 50% للخصم من الفريق الآخر
+          if (Math.random() < 0.5) { // خصم من نفس الفريق
+              targetTeam = team;
+              finalTargetType = 'self';
+              // تحديد أقصى خصم ذاتي بـ 20 نقطة
+              if (actualDamage > 20) {
+                  actualDamage = 20;
+              }
+          } else { // خصم من الفريق الآخر
+              targetTeam = other;
+              finalTargetType = 'enemy';
+          }
       }
-      
-      document.getElementById('effectBox').innerHTML = effect;
+
+      // تطبيق الخصم على النقاط
+      scores[targetTeam] -= actualDamage;
+
+      // الحصول على الاسم والتعليق الديناميكي بناءً على النتيجة الفعلية
+      const dynamicDetails = getDynamicEffectDetails(finalTargetType, actualDamage, targetTeam);
+      let effectMessage = `${dynamicDetails.name}: ${dynamicDetails.comment}`;
+
+      // إضافة مكافأة/عواقب الخصم
+      let rewardMessage = "";
+      if (actualDamage > 0) {
+        if (targetTeam === other) { // إذا كان الخصم من الفريق الآخر
+          rewardMessage = `<br><span style="color:#4dff4d;">مكافأة الهجوم: تم خصم ${actualDamage} نقطة من ${other}!</span>`;
+        } else { // إذا كان الخصم من نفس الفريق
+          rewardMessage = `<br><span style="color:#ff5555;">عواقب وخيمة: خسرت ${actualDamage} نقطة من نقاطك يا ${team}!</span>`;
+        }
+      } else { // إذا كان الضرر صفر
+          rewardMessage = `<br><span style="color:#aaa;">لا يوجد تغيير في النقاط.</span>`;
+      }
+
+      document.getElementById('effectBox').innerHTML = effectMessage + rewardMessage;
+
+      // إزالة الرمز المستخدم من قائمة الرموز المتبقية
       remainingSymbols = remainingSymbols.filter(s => s !== symbol);
-      
-      if (scores[target] <= 0) {
-        scores[target] = 0;
-        const winner = target === team ? other : team;
-        const winComment = getWinComment(winner, target);
-        document.getElementById('effectBox').innerHTML += `\n\n<strong style="color:#ff5555;font-size:24px;">${winComment}</strong>`;
-        document.getElementById('symbolList').innerHTML = '';
-        document.getElementById('nextBtn').style.display = 'none';
+
+      // التحقق من انتهاء اللعبة
+      if (scores[targetTeam] <= 0) {
+        scores[targetTeam] = 0; // تأكد أن النتيجة لا تنزل تحت الصفر
+        const winner = targetTeam === team ? other : team; // الفائز هو الفريق الآخر إذا خسر الفريق الحالي
+        const winComment = getWinComment(winner, targetTeam);
+        document.getElementById('effectBox').innerHTML += `\n\n<strong style="color:#ffcc00;font-size:24px;">${winComment}</strong>`;
+        document.getElementById('symbolList').innerHTML = ''; // إخفاء الرموز
+        document.getElementById('nextBtn').style.display = 'none'; // إخفاء زر التالي
         return;
       }
-      
+
       waitingForNext = true;
       document.getElementById('nextBtn').style.display = 'inline-block';
+      // تعطيل جميع الرموز بعد الاختيار
       document.querySelectorAll('.symbol').forEach(elm => elm.classList.add('disabled'));
     }
-    
+
     function nextTurn() {
       if (!waitingForNext) return;
-      
+
       waitingForNext = false;
-      currentTurn = currentTurn === 0 ? 1 : 0;
-      
+      currentTurn = currentTurn === 0 ? 1 : 0; // تبديل الدور
+
       if (currentTurn === 0) {
-        round++;
+        round++; // زيادة رقم الجولة عندما يعود الدور للفريق الأول
       }
-      
-      showTurn();
+
+      showTurn(); // عرض الدور الجديد
     }
-    
+
     function updateScoreDisplay() {
-      document.getElementById('scoreDisplay').innerHTML = 
-        `${teams[0]}: <span class="score-value">${scores[teams[0]]}</span> نقطة | 
+      document.getElementById('scoreDisplay').innerHTML =
+        `${teams[0]}: <span class="score-value">${scores[teams[0]]}</span> نقطة |
         ${teams[1]}: <span class="score-value">${scores[teams[1]]}</span> نقطة`;
     }
   </script>
 </body>
 </html>
+
