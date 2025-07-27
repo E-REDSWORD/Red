@@ -288,6 +288,37 @@
       display: none;
       font-size: 14px;
     }
+    
+    /* زر لعبة جديدة */
+    #newGameBtn {
+      margin-top: 20px;
+      padding: 12px 25px;
+      font-size: 18px;
+      cursor: pointer;
+      background: linear-gradient(45deg, #ff3300, #ff9900);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      display: none;
+    }
+
+    #newGameBtn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+      background: linear-gradient(45deg, #ff5500, #ffaa00);
+    }
+    
+    /* ألوان التأثيرات */
+    .effect-enemy {
+      color: #4dff4d; /* أخضر لتأثيرات الخصم */
+    }
+    
+    .effect-self {
+      color: #ff5555; /* أحمر لتأثيرات الفريق الحالي */
+    }
   </style>
 </head>
 <body>
@@ -344,6 +375,8 @@
       <div id="scoreDisplay"></div>
     </div>
 
+    <button id="newGameBtn" onclick="newGame()">لعبة جديدة</button>
+    
     <div class="footer">
       تم تطوير اللعبة بدقة لتكون متوافقة مع الهواتف الذكية عن طريق فريق تطوير __ 𖤍 | 𝐑𝐄𝐃𝐒𝐖𝐎𝐑𝐃 - استمتع بالتجربة! الاصدار 0.5
     </div>
@@ -374,162 +407,70 @@
       '❤️','👁️','✈️','⚽','✏️','🪶','🌛','⭐','✉️','📞','📷','🔍','🧲','💣','🔑','🔒','🏠','💼','🎵','💡'
     ];
 
-    // مجموعة التأثيرات الرئيسية (60 تأثيرًا فريدًا)
-    // كل تأثير له قيمة ضرر أساسية ونوع.
-    const masterEffectPool = [
-        // تأثيرات بدون ضرر (3)
-        { damage: 0, type: 'zero' },
-        { damage: 0, type: 'zero' },
-        { damage: 0, type: 'zero' },
-
-        // تأثيرات بضرر أساسي (57 تأثيرًا)
-        // تتوزع هذه التأثيرات على 57 رمزًا متبقيًا
-        // الضرر الأساسي سيتم تعديله لـ 20 كحد أقصى إذا كان الخصم من نفس الفريق
-        // تم التأكد من أن كل قيمة ضرر لا تتكرر لأكثر من 4 تأثيرات كحد أقصى
-        { damage: 1, type: 'damaging' }, { damage: 1, type: 'damaging' },
-        { damage: 2, type: 'damaging' }, { damage: 2, type: 'damaging' },
-        { damage: 3, type: 'damaging' },
-        { damage: 4, type: 'damaging' },
-        { damage: 5, type: 'damaging' }, { damage: 5, type: 'damaging' }, { damage: 5, type: 'damaging' },
-        { damage: 6, type: 'damaging' },
-        { damage: 7, type: 'damaging' }, { damage: 7, type: 'damaging' },
-        { damage: 8, type: 'damaging' }, { damage: 8, type: 'damaging' },
-        { damage: 9, type: 'damaging' },
-        { damage: 10, type: 'damaging' }, { damage: 10, type: 'damaging' }, { damage: 10, type: 'damaging' }, { damage: 10, type: 'damaging' }, // 4 مرات
-        { damage: 11, type: 'damaging' },
-        { damage: 12, type: 'damaging' }, { damage: 12, type: 'damaging' }, { damage: 12, type: 'damaging' },
-        { damage: 13, type: 'damaging' }, { damage: 13, type: 'damaging' },
-        { damage: 14, type: 'damaging' },
-        { damage: 15, type: 'damaging' }, { damage: 15, type: 'damaging' }, { damage: 15, type: 'damaging' }, { damage: 15, type: 'damaging' }, // 4 مرات
-        { damage: 16, type: 'damaging' }, { damage: 16, type: 'damaging' },
-        { damage: 17, type: 'damaging' }, { damage: 17, type: 'damaging' },
-        { damage: 18, type: 'damaging' }, { damage: 18, type: 'damaging' },
-        { damage: 19, type: 'damaging' }, { damage: 19, type: 'damaging' },
-        { damage: 20, type: 'damaging' }, { damage: 20, type: 'damaging' }, { damage: 20, type: 'damaging' },
-        { damage: 22, type: 'damaging' },
-        { damage: 24, type: 'damaging' },
-        { damage: 25, type: 'damaging' },
-        { damage: 26, type: 'damaging' },
-        { damage: 28, type: 'damaging' },
-        { damage: 30, type: 'damaging' }, { damage: 30, type: 'damaging' },
-        { damage: 32, type: 'damaging' },
-        { damage: 34, type: 'damaging' },
-        { damage: 35, type: 'damaging' },
-        { damage: 36, type: 'damaging' },
-        { damage: 38, type: 'damaging' },
-        { damage: 40, type: 'damaging' }, { damage: 40, type: 'damaging' },
-        { damage: 52, type: 'damaging' }, { damage: 52, type: 'damaging' } // الرموز النادرة
+    // مجموعة التأثيرات الجديدة مع المسميات المطلوبة
+    const newEffects = [
+      { name: "قبضة ريدسورد المحكمة أطبقت على موارد العدو", points: 36 },
+      { name: "لغز العسيري المحير أربك استراتيجية العدو", points: 29 },
+      { name: "عبقرية ماجد التكتيكية تقلب الطاولة", points: 41 },
+      { name: "لواء برستيج السابع يقتحم معسكر العدو", points: 29 },
+      { name: "تنمر أسير الجارح", points: 34 },
+      { name: "قوات ريدسورد الجامحة", points: 44 },
+      { name: "طلقة ماجد المعكوسة", points: -14 },
+      { name: "كرسي بريستيج المتحرك", points: -28 },
+      { name: "ارتباك اسير اللحظي", points: -18 },
+      { name: "اندفاع ماجد المتهور", points: -35 },
+      { name: "رمح ريدسورد البلاستيكي", points: 2 },
+      { name: "فرس ماجد الاعرج", points: 23 },
+      { name: "تنين سماوي", points: 52 },
+      { name: "قوات بريستيج النارية", points: 29 },
+      { name: "روائح كريهة تفوح منكم", points: -8 },
+      { name: "تكليجات هيون", points: 9 },
+      { name: "شبح نبض الاحول", points: -22 },
+      { name: "شبشب جدتي زرعة", points: 25 },
+      { name: "دراجة نحات المقربعة", points: -20 },
+      { name: "هرمونات حفصة المتقلبة", points: 38 },
+      { name: "معسل ناي الفاسد", points: -18 },
+      { name: "سوالف ماريا والجدران", points: 13 },
+      { name: "تمرد داخلي بقيادة عبود", points: -10 },
+      { name: "قنبلة القيصر النووية", points: 49 },
+      { name: "انفجار نجم كوني", points: 52 },
+      { name: "تسونامي ريدسورد وماجد", points: 26 },
+      { name: "مسدس أسير المائي", points: 0 },
+      { name: "قذيفة مدفع سان خوسيه", points: 17 },
+      { name: "سجاير ماجد منتهية الصلاحية", points: -10 },
+      { name: "شعوذة وبخور عهود", points: 7 },
+      { name: "قيادة بارفان المحنكة", points: 14 },
+      { name: "لسان شدن الطويل", points: 16 },
+      { name: "غواصة بارفان الروسية", points: 10 },
+      { name: "اسطول برستيج الروسي", points: 39 },
+      { name: "شبشب دونات الطائر", points: 15 },
+      { name: "شنب زوزا الوردي", points: 11 },
+      { name: "قنبلة وطن الهجومية", points: 32 },
+      { name: "عطسة خيالي المفجعة", points: -37 },
+      { name: "كُراثة هيون الفاسدة", points: -16 },
+      { name: "تخزينة شامخ المخدرة", points: 27 },
+      { name: "اندومي الفارقة بنكهة الصراصير", points: -22 },
+      { name: "دبابة سنتوب المحترفة", points: 21 },
+      { name: "فهاوة سلتوح الضايعة", points: 0 },
+      { name: "حظ دندونة المصخم", points: 0 },
+      { name: "لدغة خيال وقمر الضايعة", points: -19 },
+      { name: "برود ناي الخبيثة", points: 36 },
+      { name: "طلاسم أسير", points: 39 },
+      { name: "نفسية الجدة لينو المضروبة", points: -12 },
+      { name: "عيون دينيز الحولا", points: -9 },
+      { name: "لقافة دنو الفضولية", points: -21 },
+      { name: "فلسفة أنس الهابطة", points: -16 },
+      { name: "فصلات امجد المتقلبة", points: -34 },
+      { name: "طقطقة مذهلة", points: 38 },
+      { name: "حمار شاكر العصبي", points: -29 },
+      { name: " طبخ جوكر الفاسد يسبب اسهالات حادة", points: -28 },
+      { name: "سم بريستيج القاتل", points: 33 },
+      { name: "رفسة حمار اعرج", points: -38 },
+      { name: "صراخ سارا المزعج", points: -8 },
+      { name: "شخير سيف العالي", points: 27 },
+      { name: "ثرثرة مشعل الفارغة", points: -18 },
+      { name: "عكاز سماسم يتصل بالدعم الفني هههه", points: -24 }
     ];
-
-
-    // أسماء التأثيرات وتعليقاتها، مصنفة حسب نوع الضرر وقيمته
-    const effectDetailsPool = {
-        zero: [
-            { name: "هدوء ما قبل العاصفة", comment: "لا شيء يحدث! مجرد وهم عابر في ساحة المعركة. 🍃" },
-            { name: "ضباب الحرب", comment: "الرؤية معدومة، لا إصابة! الجولة تمر بسلام زائف. 🌫️" },
-            { name: "فشل الإطلاق", comment: "قذيفة فارغة! لا ضرر يذكر في هذه الجولة. 💣" },
-            { name: "صمت المقابر", comment: "صمت رهيب يلف الأجواء، لا حركة، لا ضرر. 🤫" },
-            { name: "سراب الأمل", comment: "وهم يخدع الأعداء، لكن بلا تأثير حقيقي. ✨" },
-            { name: "ريح عابرة", comment: "مرت الريح دون أن تحمل معها شيئاً. 🌬️" },
-            { name: "فشل التجسس", comment: "محاولة تجسس باءت بالفشل، لا معلومات، لا ضرر. 🕵️" }
-        ],
-        self: { // تأثيرات الخصم من النفس
-            low: [ // ضرر 1-5
-                { name: "نيران صديقة", comment: "رصاصة طائشة تصيب فريق {team} وتخصم {damage} نقطة!" },
-                { name: "خطأ تكتيكي", comment: "قرار خاطئ يكلف فريق {team} {damage} نقطة من نقاطه!" },
-                { name: "فخ ذاتي", comment: "فريق {team} يسقط في فخه الخاص ويخسر {damage} نقطة!" },
-                { name: "انزلاق مفاجئ", comment: "عثرة غير متوقعة تسبب خسارة {damage} نقطة لفريق {team}!" },
-                { name: "طعنة الغدر", comment: "خنجر من الخلف يخصم {damage} نقطة من فريق {team}!" },
-                { name: "تراجع معنوي", comment: "انهيار بسيط في الروح المعنوية يكلف فريق {team} {damage} نقطة!" },
-                { name: "تمرد داخلي", comment: "فوضى عارمة داخل صفوف فريق {team} تخسره {damage} نقطة!" },
-                { name: "ارتباك الصفوف", comment: "تضارب الأوامر يخصم {damage} نقطة من فريق {team}!" },
-                { name: "إصابة غير مقصودة", comment: "جندي من فريق {team} يصاب عن طريق الخطأ ويخسر {damage} نقطة!" },
-                { name: "فقدان الإمدادات", comment: "إمدادات حيوية لفريق {team} تضيع وتكلفهم {damage} نقطة!" },
-                { name: "تشتت الانتباه", comment: "صوت غريب يشتت انتباه فريق {team} ويخصم {damage} نقطة!" },
-                { name: "شبح الماضي", comment: "شبح من الماضي يطارد فريق {team} ويخصم {damage} نقطة!" }
-            ],
-            medium: [ // ضرر 6-15
-                { name: "نيران صديقة مكثفة", comment: "قذائف مدفعية طائشة تصيب فريق {team} وتخصم {damage} نقطة!" },
-                { name: "فشل لوجستي", comment: "إمدادات فريق {team} تتعرض للنهب وتخسر {damage} نقطة!" },
-                { name: "خطأ استراتيجي", comment: "مناورة فاشلة تكلف فريق {team} {damage} نقطة!" },
-                { name: "هجوم عكسي", comment: "هجوم فاشل يرتد على فريق {team} ويخصم {damage} نقطة!" },
-                { name: "تشتت الاتصالات", comment: "رسالة مشفرة خاطئة تشتت فريق {team} وتخصم {damage} نقطة!" },
-                { name: "فخاخ مموهة", comment: "فريق {team} يسقط في فخاخه المموهة ويخسر {damage} نقطة!" },
-                { name: "تدمير القاعدة", comment: "انهيار جزء من قاعدة فريق {team} يكلفهم {damage} نقطة!" },
-                { name: "ارتداد السحر", comment: "تعويذة سحرية ترتد على فريق {team} وتخصم {damage} نقطة!" },
-                { name: "ثقب في الدفاع", comment: "ثغرة في دفاعات فريق {team} تكلفهم {damage} نقطة!" },
-                { name: "خسارة القيادة", comment: "فريق {team} يفقد قائداً مهماً ويخسر {damage} نقطة!" },
-                { name: "عاصفة رملية", comment: "عاصفة رملية مفاجئة تضرب فريق {team} وتخصم {damage} نقطة!" }
-            ],
-            high: [ // ضرر 16-20 (الحد الأقصى للخصم الذاتي)
-                { name: "لعنة الحرب", comment: "ضربة قاضية من سوء الحظ تضرب فريق {team} وتخصم {damage} نقطة!" },
-                { name: "انتحار تكتيكي", comment: "قرار كارثي يخصم {damage} نقطة من فريق {team}!" },
-                { name: "خسارة فادحة", comment: "فريق {team} يتكبد خسائر فادحة ويخسر {damage} نقطة!" },
-                { name: "انهيار نفسي", comment: "انهيار نفسي جماعي يضرب فريق {team} ويخصم {damage} نقطة!" }
-            ]
-        },
-        enemy: { // تأثيرات الخصم من العدو
-            low: [ // ضرر 1-15
-                { name: "ضربة القناص", comment: "قناص ماهر يصيب فريق {team} بدقة ويخصم {damage} نقطة!" },
-                { name: "تكتيك التشتيت", comment: "مناورة سريعة تشتت انتباه فريق {team} وتخصم {damage} نقطة!" },
-                { name: "اختراق الاتصالات", comment: "رسالة مشفرة مدمرة تخترق دفاعات فريق {team} وتخصم {damage} نقطة!" },
-                { name: "هجوم الفجر", comment: "هجوم مباغت في الفجر على فريق {team} يخصم {damage} نقطة!" },
-                { name: "عملية تخريب", comment: "عميل سري يزرع الفزع في صفوف فريق {team} ويخصم {damage} نقطة!" },
-                { name: "كمين مفاجئ", comment: "كمين محكم يباغت فريق {team} ويخصم {damage} نقطة!" },
-                { name: "صدمة صوتية", comment: "انفجار صوتي يربك فريق {team} ويخصم {damage} نقطة!" },
-                { name: "غارة خاطفة", comment: "غارة جوية سريعة تضرب فريق {team} وتخصم {damage} نقطة!" },
-                { name: "ثلاثي الرعب", comment: "ثلاث قذائف متتالية تضرب فريق {team} وتخصم {damage} نقطة!" },
-                { name: "سموم الحرب", comment: "غاز سام ينتشر في معسكر فريق {team} ويخصم {damage} نقطة!" },
-                { name: "هجوم رباعي", comment: "أربع دبابات تتقدم نحو فريق {team} وتخصم {damage} نقطة!" },
-                { name: "وحدة كوماندوز", comment: "وحدة كوماندوز سريعة تتسلل لمعسكر فريق {team} وتخصم {damage} نقطة!" },
-                { name: "خمسة جنود نخبة", comment: "خمسة جنود نخبة يهاجمون فريق {team} ويخصمون {damage} نقطة!" },
-                { name: "تكتيك الحصار", comment: "حصار محكم يطبق على فريق {team} ويخصم {damage} نقطة!" },
-                { name: "ظلام دامس", comment: "ظلام دامس يلف معسكر فريق {team} ويخصم {damage} نقطة!" },
-                { name: "فخ الموت", comment: "فخ محكم ينصب لفريق {team} ويخصم {damage} نقطة!" },
-                { name: "سهم الغدر", comment: "سهم مسموم يصيب فريق {team} ويخصم {damage} نقطة!" },
-                { name: "عاصفة الرصاص", comment: "عاصفة من الرصاص تنهال على فريق {team} وتخصم {damage} نقطة!" },
-                { name: "خدعة ذكية", comment: "خدعة ذكية تضلل فريق {team} وتخصم {damage} نقطة!" },
-                { name: "فخاخ متفجرة", comment: "فخاخ متفجرة تنفجر في طريق فريق {team} وتخصم {damage} نقطة!" }
-            ],
-            medium: [ // ضرر 16-26
-                { name: "سبع ضربات قاضية", comment: "سبع ضربات متتالية تنهال على فريق {team} وتخصم {damage} نقطة!" },
-                { name: "خطة جهنمية", comment: "خطة جهنمية تنفذ ضد فريق {team} وتخصم {damage} نقطة!" },
-                { name: "ثمانية مدافع", comment: "ثمانية مدافع تطلق النار على فريق {team} وتخصم {damage} نقطة!" },
-                { name: "إغلاق الطرق", comment: "جميع طرق الإمداد لفريق {team} تغلق ويخسر {damage} نقطة!" },
-                { name: "تسعة صواريخ", comment: "تسعة صواريخ باليستية تضرب فريق {team} وتخصم {damage} نقطة!" },
-                { name: "هجوم مضاد", comment: "هجوم مضاد عنيف يرتد على فريق {team} ويخصم {damage} نقطة!" },
-                { name: "عشرة عمالقة", comment: "عشرة عمالقة يهاجمون فريق {team} ويخصمون {damage} نقطة!" },
-                { name: "خسائر اقتصادية", comment: "انهيار اقتصادي مفاجئ يضرب فريق {team} ويخصم {damage} نقطة!" },
-                { name: "اثنا عشرة ضربة جوية", comment: "اثنا عشرة ضربة جوية مكثفة تضرب فريق {team} وتخصم {damage} نقطة!" },
-                { name: "تجسس العدو", comment: "عملية تجسس ناجحة تكشف نقاط ضعف فريق {team} وتخصم {damage} نقطة!" },
-                { name: "انهيار أرضي", comment: "انهيار أرضي مفاجئ يبتلع جزءاً من معسكر فريق {team} ويخصم {damage} نقطة!" },
-                { name: "هجوم المدرعات", comment: "أربعة عشرة مدرعة تقتحم صفوف فريق {team} وتخصم {damage} نقطة!" },
-                { name: "اجتياح الفيلة الحربية", comment: "فيلة حربية ضخمة تجتاح معسكر فريق {team} وتخصم {damage} نقطة!" },
-                { name: "زلزال مدمر", comment: "زلزال بقوة 15 درجة يضرب قاعدة فريق {team} ويخصم {damage} نقطة!" },
-                { name: "عاصفة نارية", comment: "عاصفة نارية تلتهم معسكر فريق {team} وتخصم {damage} نقطة!" },
-                { name: "غزو الظلام", comment: "قوات الظلام تغزو فريق {team} وتخصم {damage} نقطة!" }
-            ],
-            high: [ // ضرر 28-40
-                { name: "فرسان الظلام", comment: "هجوم فرسان الظلام يرهب فريق {team} ويخصم {damage} نقطة!" },
-                { name: "هجوم الوحش", comment: "وحش كاسر يقتحم صفوف فريق {team} ويخصم {damage} نقطة!" },
-                { name: "قصف جوي شامل", comment: "قصف جوي شامل يدمر دفاعات فريق {team} ويخصم {damage} نقطة!" },
-                { name: "إعصار الدمار", comment: "إعصار مدمر يضرب معسكر فريق {team} ويخصم {damage} نقطة!" },
-                { name: "ثورة البراكين", comment: "براكين غاضبة تثور تحت أقدام فريق {team} وتخصم {damage} نقطة!" },
-                { name: "سم الأفاعي", comment: "سم الأفاعي القاتل ينتشر في صفوف فريق {team} ويخصم {damage} نقطة!" },
-                { name: "طوفان الغضب", comment: "طوفان هائل يغمر معسكر فريق {team} ويخصم {damage} نقطة!" },
-                { name: "دمار شامل", comment: "دمار شامل يلحق بصفوف فريق {team} ويخصم {damage} نقطة!" },
-                { name: "الضربة النهائية", comment: "الضربة النهائية تزلزل فريق {team} وتخصم {damage} نقطة!" },
-                { name: "انفجار نووي", comment: "انفجار نووي يدمر معسكر فريق {team} ويخصم {damage} نقطة!" },
-                { name: "غزو التنانين", comment: "جيش من التنانين يحرق معسكر فريق {team} ويخصم {damage} نقطة!" },
-                { name: "نهاية العالم", comment: "كارثة كونية تضرب فريق {team} وتخصم {damage} نقطة!" }
-            ],
-            rare: [ // ضرر 52
-                { name: "صيحة الجحيم", comment: "صيحة الجحيم المدوية تزلزل فريق {team} وتخصم منه {damage} نقطة! 🔥" },
-                { name: "نهاية الكون", comment: "انفجار نجمي يدمر كل شيء في طريقه، ويخصم {damage} نقطة من فريق {team}! 🌌" }
-            ]
-        }
-    };
-
 
     // أسماء الجولات الحماسية
     const roundNamesPool = [
@@ -557,7 +498,6 @@
     let symbolEffectsMap = new Map(); // خريطة لربط الرمز بتأثيره العشوائي لهذه المعركة
     let usedRoundNames = []; // أسماء الجولات المستخدمة لمنع التكرار
     let currentRoundName = "";
-    let usedEffectDetailsTracker = new Map(); // لتتبع استخدام كل تأثير (الاسم والتعليق)
 
     // دالة لخلط المصفوفة (Fisher-Yates shuffle)
     function shuffleArray(array) {
@@ -568,51 +508,12 @@
       return array;
     }
 
-    // دالة للحصول على تفاصيل التأثير (الاسم والتعليق) بناءً على النوع والضرر
-    function getDynamicEffectDetails(targetType, damageValue, teamName) {
-        let poolCategory;
-        if (targetType === 'zero') {
-            poolCategory = effectDetailsPool.zero;
-        } else if (targetType === 'self') {
-            if (damageValue <= 5) {
-                poolCategory = effectDetailsPool.self.low;
-            } else if (damageValue <= 15) {
-                poolCategory = effectDetailsPool.self.medium;
-            } else { // damageValue <= 20
-                poolCategory = effectDetailsPool.self.high;
-            }
-        } else { // targetType === 'enemy'
-            if (damageValue <= 15) {
-                poolCategory = effectDetailsPool.enemy.low;
-            } else if (damageValue <= 26) {
-                poolCategory = effectDetailsPool.enemy.medium;
-            } else if (damageValue <= 40) {
-                poolCategory = effectDetailsPool.enemy.high;
-            } else { // damageValue === 52
-                poolCategory = effectDetailsPool.enemy.rare;
-            }
-        }
-
-        // تصفية التأثيرات المتاحة بناءً على عدد مرات الاستخدام
-        let availableDetails = poolCategory.filter(effect => {
-            const effectKey = `${effect.name}|${effect.comment}`; // مفتاح فريد للتأثير
-            return (usedEffectDetailsTracker.get(effectKey) || 0) < 2; // يمكن استخدامه مرتين كحد أقصى
-        });
-
-        // إذا لم تكن هناك تأثيرات متاحة (تم استخدامها مرتين)، نختار من كل ما هو متاح
-        if (availableDetails.length === 0) {
-            availableDetails = poolCategory;
-            console.warn(`تحذير: جميع التأثيرات في فئة ${targetType} بضرر ${damageValue} قد استخدمت مرتين. يتم إعادة استخدامها.`);
-        }
-
-        const selectedEffect = availableDetails[Math.floor(Math.random() * availableDetails.length)];
-        const effectKey = `${selectedEffect.name}|${selectedEffect.comment}`;
-        usedEffectDetailsTracker.set(effectKey, (usedEffectDetailsTracker.get(effectKey) || 0) + 1);
-
-        return {
-            name: selectedEffect.name,
-            comment: selectedEffect.comment.replace(/{team}/g, teamName).replace(/{damage}/g, damageValue)
-        };
+    // دالة للحصول على تعليق الفوز
+    function getWinComment(winner, loser) {
+      const comment = winCommentsPool[Math.floor(Math.random() * winCommentsPool.length)];
+      return comment
+        .replace(/{team}/g, winner)
+        .replace(/{loser}/g, loser);
     }
 
     function startGame() {
@@ -626,17 +527,14 @@
       // إعادة تعيين الرموز المتبقية بالترتيب الثابت
       remainingSymbols = [...fixedOrderedSymbols];
 
-      // إعادة تعيين متتبع استخدام التأثيرات لكل لعبة جديدة
-      usedEffectDetailsTracker = new Map();
-
-      // تخصيص التأثيرات بشكل عشوائي للرموز في هذه المعركة
+      // تخصيص التأثيرات الجديدة بشكل عشوائي للرموز في هذه المعركة
       symbolEffectsMap = new Map(); // إعادة تعيين الخريطة لكل لعبة جديدة
-      let availableEffects = shuffleArray([...masterEffectPool]); // خلط مجموعة التأثيرات الرئيسية
+      let availableEffects = shuffleArray([...newEffects]); // خلط مجموعة التأثيرات الجديدة
 
       // تخصيص تأثير فريد لكل رمز في الترتيب الثابت
       for (let i = 0; i < fixedOrderedSymbols.length; i++) {
           const currentSymbol = fixedOrderedSymbols[i];
-          const assignedEffect = availableEffects.pop(); // سحب تأثير واحد من المجموعة المخلطة
+          const assignedEffect = availableEffects[i]; // استخدام التأثير من المجموعة المخلوطة
           symbolEffectsMap.set(currentSymbol, assignedEffect);
       }
 
@@ -646,11 +544,30 @@
       document.querySelector('.team-inputs').style.display = 'none';
       document.querySelector('.selection').style.display = 'block';
       document.getElementById('symbolsExhausted').style.display = 'none';
+      document.getElementById('newGameBtn').style.display = 'block';
       waitingForNext = false;
       currentTurn = 0;
       round = 1;
 
       showTurn();
+    }
+
+    function newGame() {
+      // إعادة تعيين المتغيرات
+      teams = [];
+      scores = {};
+      currentTurn = 0;
+      round = 1;
+      waitingForNext = false;
+      remainingSymbols = [];
+      symbolEffectsMap = new Map();
+      usedRoundNames = [];
+      currentRoundName = "";
+
+      // إعادة عرض قسم إدخال الفرق وإخفاء قسم اللعبة
+      document.querySelector('.team-inputs').style.display = 'block';
+      document.querySelector('.selection').style.display = 'none';
+      document.getElementById('newGameBtn').style.display = 'none';
     }
 
     function showTurn() {
@@ -689,70 +606,37 @@
       document.getElementById('symbolsExhausted').style.display = 'none';
     }
 
-    // دالة للحصول على تعليق الفوز
-    function getWinComment(winner, loser) {
-      const comment = winCommentsPool[Math.floor(Math.random() * winCommentsPool.length)];
-      return comment
-        .replace(/{team}/g, winner)
-        .replace(/{loser}/g, loser);
-    }
-
     function selectSymbol(el, symbol) {
       if (waitingForNext) return;
 
       const team = teams[currentTurn];
       const other = teams[1 - currentTurn];
+      
       // الحصول على التأثير المخصص للرمز في هذه المعركة
-      let effectData = symbolEffectsMap.get(symbol);
-
-      if (!effectData) {
-          console.error("Symbol effect not found for:", symbol);
-          effectData = { damage: 0, type: 'zero' }; // تأثير افتراضي لتجنب الأخطاء
-      }
-
-      let actualDamage = effectData.damage;
+      const effect = symbolEffectsMap.get(symbol);
+      const points = effect.points;
+      
       let targetTeam = "";
-      let finalTargetType = ""; // لتحديد نوع التأثير (صفر، ذاتي، عدو) لـ getDynamicEffectDetails
-
-      if (effectData.type === 'zero') {
-          targetTeam = team; // لا يهم الفريق المستهدف فالضرر صفر
-          actualDamage = 0;
-          finalTargetType = 'zero';
-      } else { // إذا كان التأثير يسبب ضررًا (type: 'damaging')
-          // 50% احتمال للخصم من نفس الفريق، 50% للخصم من الفريق الآخر
-          if (Math.random() < 0.5) { // خصم من نفس الفريق
-              targetTeam = team;
-              finalTargetType = 'self';
-              // تحديد أقصى خصم ذاتي بـ 20 نقطة
-              if (actualDamage > 20) {
-                  actualDamage = 20;
-              }
-          } else { // خصم من الفريق الآخر
-              targetTeam = other;
-              finalTargetType = 'enemy';
-          }
+      let message = "";
+      let colorClass = "";
+      
+      // تحديد الفريق المستهدف بناءً على إشارة النقاط
+      if (points >= 0) {
+        // نقاط موجبة: تخصم من الفريق الخصم
+        targetTeam = other;
+        scores[targetTeam] -= points;
+        colorClass = "effect-enemy"; // أخضر لتأثيرات الخصم
+        message = `<span class="${colorClass}">${effect.name}</span><br>تم خصم ${points} نقطة من ${targetTeam}!`;
+      } else {
+        // نقاط سالبة: تخصم من الفريق الحالي
+        targetTeam = team;
+        const absPoints = Math.abs(points);
+        scores[targetTeam] -= absPoints;
+        colorClass = "effect-self"; // أحمر لتأثيرات الفريق الحالي
+        message = `<span class="${colorClass}">${effect.name}</span><br>تم خصم ${points} نقطة من ${targetTeam}!`;
       }
 
-      // تطبيق الخصم على النقاط
-      scores[targetTeam] -= actualDamage;
-
-      // الحصول على الاسم والتعليق الديناميكي بناءً على النتيجة الفعلية
-      const dynamicDetails = getDynamicEffectDetails(finalTargetType, actualDamage, targetTeam);
-      let effectMessage = `${dynamicDetails.name}: ${dynamicDetails.comment}`;
-
-      // إضافة مكافأة/عواقب الخصم
-      let rewardMessage = "";
-      if (actualDamage > 0) {
-        if (targetTeam === other) { // إذا كان الخصم من الفريق الآخر
-          rewardMessage = `<br><span style="color:#4dff4d;">مكافأة الهجوم: تم خصم ${actualDamage} نقطة من ${other}!</span>`;
-        } else { // إذا كان الخصم من نفس الفريق
-          rewardMessage = `<br><span style="color:#ff5555;">عواقب وخيمة: خسرت ${actualDamage} نقطة من نقاطك يا ${team}!</span>`;
-        }
-      } else { // إذا كان الضرر صفر
-          rewardMessage = `<br><span style="color:#aaa;">لا يوجد تغيير في النقاط.</span>`;
-      }
-
-      document.getElementById('effectBox').innerHTML = effectMessage + rewardMessage;
+      document.getElementById('effectBox').innerHTML = message;
 
       // إزالة الرمز المستخدم من قائمة الرموز المتبقية
       remainingSymbols = remainingSymbols.filter(s => s !== symbol);
@@ -795,4 +679,3 @@
   </script>
 </body>
 </html>
-
